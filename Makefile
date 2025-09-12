@@ -7,7 +7,7 @@ AR      = ar
 ARFLAGS = rcs
 
 # Sources
-LIBSRC  = ft_write.s ft_strlen.s     # all asm files that go into the library
+LIBSRC  = ft_write.s ft_strlen.s ft_strcpy.s     # all asm files that go into the library
 LIBOBJ  = $(LIBSRC:.s=.o)
 
 MAINSRC = main.c
