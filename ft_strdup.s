@@ -2,26 +2,33 @@ section .text
     global ft_strdup
     extern malloc
     extern ft_strlen
-    
 
 ft_strdup:
-                                                        ;  char *strdup(const char *s);
-    xor rax, rax                                        ; initialize the return value to 0
-    mov rsi, rdi                                        ; store rdi into rsi
+    mov r8, rdi              ; salva puntatore originale in r8
 
-    call ft_strlen                                      ; strlen of rdi and store it in rax
-    inc rax                                             ; so now strlen +1 allows for null terminator
-    mov rdi, rax                                        ; store the return of strlen into rdi
-    call malloc wrt ..plt                               ; malloc(ft_strlen(*s))       
-    xor rcx, rcx                                        ; initialize counter to 0
+    call ft_strlen           ; rax = strlen(s)
+    mov rcx, rax              ; rcx = len
+    inc rcx                   ; rcx = len + 1 (incluso terminatore)
 
-.loop:
-    cmp rdi, rcx                                        ; checks if counter is same as length +1
-    je .done                                            ; if current byte = 0 exits the loop
-    mov bl, [rsi + rcx]                                 ; copies the byte and store it in bl
-    mov [rax + rcx], bl                                 ; moves the byte into the rax
-    inc rcx                                             ; increments counter
-    jmp .loop                                           ; loops until byte is equal to 0
+    mov rdi, rcx               ; malloc(len+1)
+    call malloc wrt ..plt
+    test rax, rax
+    je .done
+
+    mov rsi, r8                ; rsi = sorgente
+    mov rdi, rax                ; rdi = destinazione
+    mov rdx, rcx                ; rdx = len+1 da copiare
+
+.copy_loop:
+    mov bl, [rsi]       ; carica il byte corrente della sorgente in bl
+    mov [rdi], bl       ; scrive quel byte nella destinazione
+    inc rsi             ; avanza di 1 nella sorgente
+    inc rdi             ; avanza di 1 nella destinazione
+    dec rdx             ; abbiamo copiato 1 byte, quindi ne restano uno in meno
+    jnz .copy_loop      ; se rdx != 0, salta indietro e copia il prossimo
+
+    sub rdi, rcx                ; riportiamo rdi all'inizio
+    mov rax, rdi                ; rax = puntatore allocato
 
 .done:
     ret

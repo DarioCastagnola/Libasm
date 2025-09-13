@@ -7,7 +7,7 @@ AR      = ar
 ARFLAGS = rcs
 
 # Sources
-LIBSRC  = ft_write.s ft_strlen.s ft_strcpy.s ft_strdup.s ft_read.s   # all asm files that go into the library
+LIBSRC  = ft_write.s ft_strlen.s ft_strcpy.s ft_strdup.s ft_read.s ft_strcmp.s   # all asm files that go into the library
 LIBOBJ  = $(LIBSRC:.s=.o)
 
 MAINSRC = main.c
@@ -34,3 +34,6 @@ fclean: clean
 	rm -f $(NAME) $(LIBNAME)
 
 re: fclean all
+
+run: re
+	valgrind --leak-check=full ./$(NAME)
