@@ -2,12 +2,12 @@ NAME    = main
 LIBNAME = libasm.a
 
 ASM     = nasm
-ASMFLAGS = -f elf64 -DPIC
+ASMFLAGS = -f elf64
 AR      = ar
 ARFLAGS = rcs
 
 # Sources
-LIBSRC  = ft_write.s ft_strlen.s ft_strcpy.s     # all asm files that go into the library
+LIBSRC  = ft_write.s ft_strlen.s ft_strcpy.s ft_strdup.s    # all asm files that go into the library
 LIBOBJ  = $(LIBSRC:.s=.o)
 
 MAINSRC = main.c

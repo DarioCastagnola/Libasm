@@ -1,9 +1,11 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 extern ssize_t ft_write(int fd, const void *buf, size_t count);
 extern size_t ft_strlen(const char *s);
 extern char *ft_strcpy(char *dest, const char *src);
+extern char *ft_strdup(const char *s);
 
 int main ()
 {
@@ -23,4 +25,12 @@ int main ()
     printf("%s\n", strcpy(buffer, "Cane"));
     printf("Testing LIBASM strcpy:\n");
     printf("%s\n", ft_strcpy(buffer,"Cane"));
+    // testing strdup
+    char *buffer1;
+    printf("Testing LIBASM strdup\n");
+    buffer1 = ft_strdup("Cane");
+    printf("%s\n", buffer1);
+    free(buffer1);
+    // printf("Testing LIBASM strdup:\n");
+    // printf("%s\n", ft_strdup("Cane"));
 }
