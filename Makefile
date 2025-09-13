@@ -2,7 +2,7 @@ NAME    = main
 LIBNAME = libasm.a
 
 ASM     = nasm
-ASMFLAGS = -f elf64 -DPIC
+ASMFLAGS = -f elf64
 AR      = ar
 ARFLAGS = rcs
 

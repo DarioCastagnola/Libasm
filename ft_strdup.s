@@ -1,34 +1,28 @@
 section .text
-    global ft_strdup
-    extern malloc
-    extern ft_strlen
+    global ft_strdup          
+    extern malloc             
+    extern ft_strlen          
 
 ft_strdup:
-    mov r8, rdi              ; salva puntatore originale in r8
+    xor al, al                ; clear rax low byte (just to be safe, sets rax=0)
+    mov r13, rdi              ; save the input pointer (const char *s) in r13
 
-    call ft_strlen           ; rax = strlen(s)
-    mov rcx, rax              ; rcx = len
-    inc rcx                   ; rcx = len + 1 (incluso terminatore)
+    call ft_strlen            ; get the length of the string in rdi
+    inc rax                   ; add 1 for the null terminator
+    mov rdi, rax              ; set rdi = length + 1, argument for malloc
+    mov r14, rax              ; save the length in r14 for later copy
 
-    mov rdi, rcx               ; malloc(len+1)
-    call malloc wrt ..plt
-    test rax, rax
-    je .done
+    call malloc wrt ..plt     ; allocate memory for the duplicated string
+    test rax, rax             ; check if malloc returned NULL
+    je return                 ; if malloc failed, jump to return (rax = 0)
 
-    mov rsi, r8                ; rsi = sorgente
-    mov rdi, rax                ; rdi = destinazione
-    mov rdx, rcx                ; rdx = len+1 da copiare
+    mov rsi, r13              ; source pointer (original string)
+    mov rdi, rax              ; destination pointer (malloced memory)
+    mov rcx, r14              ; number of bytes to copy (length + null terminator)
+    cld                       ; clear the direction flag (copy forwards)
+    rep movsb                 ; copy rcx bytes from [rsi] to [rdi]
 
-.copy_loop:
-    mov bl, [rsi]       ; carica il byte corrente della sorgente in bl
-    mov [rdi], bl       ; scrive quel byte nella destinazione
-    inc rsi             ; avanza di 1 nella sorgente
-    inc rdi             ; avanza di 1 nella destinazione
-    dec rdx             ; abbiamo copiato 1 byte, quindi ne restano uno in meno
-    jnz .copy_loop      ; se rdx != 0, salta indietro e copia il prossimo
+    ret                       ; return the pointer to the duplicated string in rax
 
-    sub rdi, rcx                ; riportiamo rdi all'inizio
-    mov rax, rdi                ; rax = puntatore allocato
-
-.done:
-    ret
+return:
+    ret                       ; malloc failed: return 0 (rax already zeroed)
